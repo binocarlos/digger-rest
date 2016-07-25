@@ -1,0 +1,344 @@
+[
+    {
+        "_digger": {
+            "tag": "folder",
+            "class": [
+                "hello"
+            ],
+            "id": "places",
+            "diggerid": "17dcd3b0ba3411e2b58d91a4d58f5088"
+        },
+        "_children": [
+            {
+                "_digger": {
+                    "tag": "country",
+                    "class": [
+                        "big",
+                        "apples"
+                    ],
+                    "id": "",
+                    "diggerid": ""
+                },
+                "_children": [
+                    {
+                        "_digger": {
+                            "tag": "city",
+                            "class": [
+                                "south",
+                                "red"
+
+                            ],
+                            "inode":"bristol",
+                            "id": "",
+                            "diggerid": ""
+                        },
+                        "_children": [
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "poor",
+                                        "blue"
+                                    ],
+                                    "inode":"pauls",
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "St. Pauls",
+                                "population": "103"
+                            },
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "rich"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Redland",
+                                "population": "79"
+                            },
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "poor"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Easton",
+                                "population": "38"
+                            },
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "rich"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Hotwells",
+                                "population": "320"
+                            }
+                        ],
+                        "name": "Bristol",
+                        "team": "Bristol City"
+                    },
+                    {
+                        "_digger": {
+                            "tag": "city",
+                            "inode":"London",
+                            "class": [
+                                "south",
+                                "red"
+                            ],
+                            "id": "",
+                            "diggerid": ""
+                        },
+                        "_children": [
+                            {
+                                "_digger": {
+                                    "inode":"westminster",
+                                    "tag": "area",
+                                    "class": [
+                                        "rich",
+                                        "blue"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Westminster",
+                                "population": "298"
+                            },
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "rich"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Ealing",
+                                "population": "98"
+                            },
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "poor"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Woolwich",
+                                "population": "68"
+                            }
+                        ],
+                        "name": "London",
+                        "team": "Arsenal"
+                    },
+                    {
+                        "_digger": {
+                            "tag": "city",
+                            "class": [
+                                "midlands"
+                            ],
+                            "id": "",
+                            "diggerid": ""
+                        },
+                        "_children": [
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "rich"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Edgbaston",
+                                "population": "183"
+                            }
+                        ],
+                        "name": "Birmingham",
+                        "team": "Ason Villa"
+                    },
+                    {
+                        "_digger": {
+                            "tag": "city",
+                            "class": [
+                                "midlands"
+                            ],
+                            "id": "",
+                            "diggerid": ""
+                        },
+                        "_children": [
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "rich"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Digbeth",
+                                "population": "183"
+                            }
+                        ],
+                        "name": "Nottingham",
+                        "team": "Nottingham Forest"
+                    },
+                    {
+                        "_digger": {
+                            "tag": "city",
+                            "class": [
+                                "north"
+                            ],
+                            "id": "",
+                            "diggerid": ""
+                        },
+                        "_children": [
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "poor"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Everton",
+                                "population": "89"
+                            }
+                        ],
+                        "name": "Liverpool",
+                        "team": "Everton"
+                    },
+                    {
+                        "_digger": {
+                            "tag": "city",
+                            "class": [
+                                "north"
+                            ],
+                            "id": "",
+                            "diggerid": ""
+                        },
+                        "_children": [
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "rich"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Linthorpe",
+                                "population": "28"
+                            },
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "poor"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Grangetown",
+                                "population": "39"
+                            }
+                        ],
+                        "name": "Middlesbrough",
+                        "team": "Middlesbrough"
+                    }
+                ],
+                "name": "UK"
+            },
+            {
+                "_digger": {
+                    "tag": "country",
+                    "class": [
+                        "big"
+                    ],
+                    "id": "",
+                    "diggerid": ""
+                },
+                "_children": [
+                    {
+                        "_digger": {
+                            "tag": "city",
+                            "class": [
+                                "north"
+                            ],
+                            "id": "",
+                            "diggerid": ""
+                        },
+                        "_children": [
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "poor"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Harbourside",
+                                "population": "39"
+                            }
+                        ],
+                        "name": "Aberdeen",
+                        "team": "Aberdeen"
+                    },
+                    {
+                        "_digger": {
+                            "tag": "city",
+                            "class": [
+                                "south"
+                            ],
+                            "id": "",
+                            "diggerid": ""
+                        },
+                        "_children": [
+                            {
+                                "_digger": {
+                                    "tag": "area",
+                                    "class": [
+                                        "rich"
+                                    ],
+                                    "id": "",
+                                    "diggerid": ""
+                                },
+                                "_children": [],
+                                "name": "Meadows",
+                                "population": "97"
+                            }
+                        ],
+                        "name": "Edinburgh",
+                        "team": "Hearts"
+                    }
+                ],
+                "name": "Scotland"
+            }
+        ]
+    }
+]

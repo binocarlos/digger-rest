@@ -1,0 +1,37 @@
+{
+  "name": "digger-rest",
+  "version": "1.0.0",
+  "description": "REST api server for digger queries",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/binocarlos/digger-rest.git"
+  },
+  "keywords": [
+    "digger",
+    "rest"
+  ],
+  "author": "Kai Davenport",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/binocarlos/digger-rest/issues"
+  },
+  "homepage": "https://github.com/binocarlos/digger-rest#readme",
+  "dependencies": {
+    "digger-client": "^3.0.0",
+    "digger-level": "^1.0.1",
+    "digger-server": "^2.0.0",
+    "http-hash-router": "^1.1.0",
+    "level": "^1.4.0",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "level-sublevel": "^6.5.4",
+    "level-test": "^2.0.2",
+    "request": "^2.74.0",
+    "tape": "^4.6.0"
+  }
+}
