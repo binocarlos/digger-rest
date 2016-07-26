@@ -21,11 +21,12 @@ var args = require('minimist')(process.argv, {
   default:{
     port:process.env.PORT || 80,
     file:process.env.FILE || defaultDataPath,
-    basepath:process.env.BASEPATH || 'db'
+    basepath:process.env.BASEPATH || '/mydb'
   }
 })
 
-var router = Router(sub(level(args.file)), args.basepath)
+var leveldb = sub(level(args.file, {encoding: 'json'}))
+var router = Router(leveldb, args.basepath)
 
 var httpserver = http.createServer(router)
 httpserver.listen(args.port, function(){

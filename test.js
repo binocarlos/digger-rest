@@ -8,34 +8,40 @@ var Router = require('./router')
 var level    = require('level-test')({mem:true})
 var sub = require('level-sublevel')
 
-var db = sub(level('level-digger--append', {encoding: 'json'}))
+var db
 var server
 
 var testsuite = require('./testsuite')
 
 var VERSION = require(path.join(__dirname, 'package.json')).version
 
-tape('setup server', t => {
-  var router = Router(db, '/mydb')
-  server = http.createServer(router)
-  server.listen(8080, function(){
-    t.ok(true, 'server listening')
-    t.end()
-  })
+var args = require('minimist')(process.argv, {
+  alias:{
+    s:'server'
+  }
 })
 
-function listkeys(datafn, endfn){
+if(!args.server){
 
-  db.createReadStream()
-    .on('data', datafn)
-    .on('end', endfn)
+  db = sub(level('level-digger--append', {encoding: 'json'}))
 
+  tape('setup server', t => {
+    var router = Router(db, '/mydb')
+    server = http.createServer(router)
+    server.listen(8080, function(){
+      t.ok(true, 'server listening')
+      t.end()
+    })
+  })
 }
 
-testsuite(tape, 'http://127.0.0.1:8080', listkeys)
+var serverAddress = args.server ? args.server : 'http://127.0.0.1:8080'
 
+testsuite(tape, serverAddress)
 
-tape('close server', t => {
-  server.close()
-  t.end()
-})
+if(!args.server){
+  tape('close server', t => {
+    server.close()
+    t.end()
+  })
+}

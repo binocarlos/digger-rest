@@ -3,10 +3,9 @@ var path = require('path')
 var async = require('async')
 var request = require('request')
 
-
 var VERSION = require(path.join(__dirname, 'package.json')).version
 
-module.exports = function(tape, url, listkeys){
+module.exports = function(tape, url){
   tape('read version', t => {
     request({
       url: url + '/version',
@@ -104,16 +103,22 @@ module.exports = function(tape, url, listkeys){
 
   tape('list keys', t => {
     
-    if(listkeys){
-      listkeys(function(data){
-        console.log(data.key)
-      }, function(){
+    request({
+      url: url + '/keys',
+      method:'GET',
+      json:true
+    }, function(err, res){
+
+      if(err){
+        t.error(err)
         t.end()
-      })
-    }
-    else{
+      }
+
+      console.log(res.body.join("\n"))
+
       t.end()
-    }
+    })
+
   })
   
 
@@ -219,6 +224,7 @@ module.exports = function(tape, url, listkeys){
         t.end()
       }
 
+      console.log(JSON.stringify(res.body, null, 4))
       t.equal(res.statusCode, 200, '200 status')
       t.ok(res.body instanceof Array, 'result is an array')
       t.equal(res.body.length, 4, '4 results')
@@ -419,20 +425,27 @@ module.exports = function(tape, url, listkeys){
 
         var counter = 0
 
-        if(listkeys){
-          listkeys(function(data){
-            console.log(data.key)
-            if(data.key.indexOf('/mydb/cities')==0){
-              counter++
-            }
-          }, function(){
-            t.equal(counter, 1, 'only one entry for /mydb/cities')
-            next()
+
+        request({
+          url: url + '/keys',
+          method:'GET',
+          json:true
+        }, function(err, res){
+
+          if(err) return next(err)
+
+          var cityItems = res.body.filter(function(key){
+            return key.indexOf('/mydb/cities')==0
           })
-        }
-        else{
+
+          console.log(res.body.join("\n"))
+
+          t.equal(cityItems.length, 1, 'only one entry for /mydb/cities')
+
           next()
-        }
+        })
+
+
       }
 
     ], err => {

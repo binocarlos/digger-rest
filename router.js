@@ -1,9 +1,11 @@
 const path = require('path')
 const url = require('url')
+const morgan = require('morgan')
 const HttpHashRouter = require('http-hash-router')
 const concat = require('concat-stream')
 const digger = require('./digger')
 
+const logger = morgan('combined')
 const VERSION = require(path.join(__dirname, 'package.json')).version
 
 // get warehousepath and itempath from opts.params.warehouse and opts.splat
@@ -79,8 +81,11 @@ module.exports = function(leveldb, basepath){
           results
             .append(addContainer)
             .ship(function(added){
+              
               res.setHeader('content-type', 'application/json')
               res.end(JSON.stringify(added.toJSON()))
+              
+              
             })
             .on('error', function(err){
               res.statusCode = 500
@@ -177,6 +182,7 @@ module.exports = function(leveldb, basepath){
     const paths = getWarehousePaths(opts, basepath)
     const warehouse = client.connect(paths.warehouse)
 
+  
     warehouse(paths.item)
       .ship(function(results){
         res.setHeader('content-type', 'application/json')
@@ -217,8 +223,10 @@ module.exports = function(leveldb, basepath){
       warehouse
         .append(addContainer)
         .ship(function(added){
+       
           res.setHeader('content-type', 'application/json')
           res.end(JSON.stringify(added.toJSON()))
+
         })
         .on('error', function(err){
           res.statusCode = 500
@@ -264,6 +272,25 @@ module.exports = function(leveldb, basepath){
     DELETE:deleteItemById
   })
 
+  router.set('/keys', {
+    GET:function(req, res, opts, onError){
+      var arr = []
+      leveldb.createReadStream()
+        .on('data', function(d){
+          arr.push(d.key)
+        })
+        .on('end', function(err){
+          if(err){
+            res.statusCode = 500
+            res.end(err.toString())
+            return
+          }
+          res.setHeader('content-type', 'application/json')
+          res.end(JSON.stringify(arr))
+        })
+    }
+  })
+
   function handler(req, res) {
 
     function onError(err) {
@@ -273,7 +300,10 @@ module.exports = function(leveldb, basepath){
       }
     }
 
-    router(req, res, {}, onError) 
+    logger(req, res, function (err) {
+      if(err) return onError(err)
+      router(req, res, {}, onError)
+    })
   }
 
   return handler
