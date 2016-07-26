@@ -120,7 +120,7 @@ tape('list keys', t => {
   
   db.createReadStream()
     .on('data', function (data) {
-      console.log(data.key, '=', data.value)
+      console.log(data.key)
     })
     .on('error', function (err) {
       console.log('Oh my!', err)
@@ -376,6 +376,90 @@ tape('PUT diggerid', t => {
     t.end()
   })
 })
+
+
+tape('DELETE diggerid', t => {
+
+  const FIXEDID = '17dcd3b0ba3411e2b58d91a4d58f5088'
+  
+  async.series([
+
+    next => {
+      request({
+        url:'http://127.0.0.1:8080/item/' + FIXEDID,
+        method:'GET',
+        json:true
+      }, function(err, res){
+
+        if(err) return next(err)
+
+        t.equal(res.statusCode, 200, '200 status')
+        t.equal(res.body.length, 1, '1 result')
+        
+        next()
+      })
+    },
+
+    next => {
+
+      request({
+        url:'http://127.0.0.1:8080/item/' + FIXEDID,
+        method:'DELETE',
+        json:true
+      }, function(err, res){
+
+        if(err) return next(err)
+        t.equal(res.statusCode, 200, '200 status')
+
+        next()
+      })
+
+    },
+
+
+    next => {
+      request({
+        url:'http://127.0.0.1:8080/item/' + FIXEDID,
+        method:'GET',
+        json:true
+      }, function(err, res){
+
+        if(err) return next(err)
+        
+        t.equal(res.statusCode, 200, '200 status')
+        t.equal(res.body.length, 0, '0 results')
+        next()
+      })
+    },
+
+    next => {
+
+      var counter = 0
+      db.createReadStream()
+        .on('data', function (data) {
+          console.log(data.key)
+          if(data.key.indexOf('/mydb/cities')==0){
+            counter++
+          }
+        })
+        .on('error', function (err) {
+          next(err)
+        })
+        .on('end', function () {
+
+          t.equal(counter, 1, 'only one entry for /mydb/cities')
+          next()
+        })
+    }
+
+  ], err => {
+    if(err){
+      t.error(err)
+    }
+    t.end()
+  })
+})
+
 
 tape('close server', t => {
   server.close()

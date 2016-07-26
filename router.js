@@ -135,6 +135,38 @@ module.exports = function(leveldb, basepath){
     }))
   }
 
+  function deleteItemById(req, res, opts, onError){
+    const id = opts.params.id
+    const warehouse = client.connect(basepath)
+
+    warehouse('=' + id)
+      .ship(function(results){
+
+        if(results.count()<=0){
+          res.statusCode = 404
+          res.end(id + ' not found')
+          return
+        }
+
+        results
+          .remove()
+          .ship(function(added){
+            res.setHeader('content-type', 'application/json')
+            res.end(JSON.stringify(added.toJSON()))
+          })
+          .on('error', function(err){
+            res.statusCode = 500
+            res.end(err.toString())
+          })
+
+      })
+      .on('error', function(err){
+        res.statusCode = 500
+        res.end(err.toString())
+      })
+    
+  }
+
   // get a single item by it's path
   function getItemByPath(req, res, opts, onError){
 
@@ -224,7 +256,8 @@ module.exports = function(leveldb, basepath){
   router.set('/item/:id', {
     GET:getItemById,
     POST:postItemById,
-    PUT:putItemById
+    PUT:putItemById,
+    DELETE:deleteItemById
   })
 
   function handler(req, res) {
