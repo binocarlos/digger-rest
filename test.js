@@ -324,6 +324,59 @@ tape('POST diggerid', t => {
   })
 })
 
+tape('PUT diggerid', t => {
+
+  const FIXEDID = '17dcd3b0ba3411e2b58d91a4d58f5088'
+  var updatedata = {
+    size:120,
+    color:'blue'
+  }
+
+  async.series([
+
+    next => {
+
+      request({
+        url:'http://127.0.0.1:8080/item/' + FIXEDID,
+        method:'PUT',
+        json:true,
+        body:updatedata
+      }, function(err, res){
+
+        if(err) return next(err)
+
+        t.equal(res.statusCode, 200, '200 status')
+        t.equal(res.body[0].size, 120, 'value added')
+
+        next()
+      })
+
+    },
+
+
+    next => {
+      request({
+        url:'http://127.0.0.1:8080/item/' + FIXEDID,
+        method:'GET',
+        json:true
+      }, function(err, res){
+
+        if(err) return next(err)
+        
+        t.equal(res.statusCode, 200, '200 status')
+        t.equal(res.body[0].size, 120, 'value added')
+        next()
+      })
+    }
+
+  ], err => {
+    if(err){
+      t.error(err)
+    }
+    t.end()
+  })
+})
+
 tape('close server', t => {
   server.close()
   t.end()
