@@ -137,9 +137,9 @@ tape('get a virtual folder', t => {
         t.equal(res.statusCode, 200, '200 status')
         t.ok(res.body instanceof Array, 'result is an array')
 
-        t.equal(res.body[0]._digger.tag, 'folder')
-        t.equal(res.body[0]._digger.path, '/mydb')
-        t.equal(res.body[0]._digger.inode, 'shop')
+        t.equal(res.body[0]._digger.tag, 'folder', 'tag')
+        t.equal(res.body[0]._digger.path, '/mydb', 'path')
+        t.equal(res.body[0]._digger.inode, 'shop', 'inode')
 
         next()
       })
@@ -160,9 +160,9 @@ tape('get a virtual folder', t => {
         t.equal(res.statusCode, 200, '200 status')
         t.ok(res.body instanceof Array, 'result is an array')
 
-        t.equal(res.body[0]._digger.tag, 'folder')
-        t.equal(res.body[0]._digger.path, '/mydb/shop')
-        t.equal(res.body[0]._digger.inode, 'food')
+        t.equal(res.body[0]._digger.tag, 'folder', 'tag')
+        t.equal(res.body[0]._digger.path, '/mydb/shop', 'path')
+        t.equal(res.body[0]._digger.inode, 'food', 'inode')
 
         next()
       })
@@ -183,9 +183,9 @@ tape('get a virtual folder', t => {
         t.equal(res.statusCode, 200, '200 status')
         t.ok(res.body instanceof Array, 'result is an array')
 
-        t.equal(res.body[0]._digger.tag, 'fruit')
-        t.equal(res.body[0]._digger.path, '/mydb/shop/food/folder1')
-        t.equal(res.body[0]._digger.inode, 'item1')
+        t.equal(res.body[0]._digger.tag, 'fruit', 'tag')
+        t.equal(res.body[0]._digger.path, '/mydb/shop/food/folder1', 'path')
+        t.equal(res.body[0]._digger.inode, 'item1', 'inode')
 
         next()
       })
