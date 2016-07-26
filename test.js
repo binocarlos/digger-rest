@@ -166,6 +166,29 @@ tape('get a virtual folder', t => {
 
         next()
       })
+    },
+
+    next => {
+      request({
+        url:'http://127.0.0.1:8080/path/shop/food/folder1/item1',
+        method:'GET',
+        json:true
+      }, function(err, res){
+
+        if(err){
+          t.error(err)
+          t.end()
+        }
+
+        t.equal(res.statusCode, 200, '200 status')
+        t.ok(res.body instanceof Array, 'result is an array')
+
+        t.equal(res.body[0]._digger.tag, 'fruit')
+        t.equal(res.body[0]._digger.path, '/mydb/shop/food/folder1')
+        t.equal(res.body[0]._digger.inode, 'item1')
+
+        next()
+      })
     }
   ], err => {
     if(err){
