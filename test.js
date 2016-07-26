@@ -243,8 +243,84 @@ tape('run a city selector', t => {
     t.ok(res.body instanceof Array, 'result is an array')
     t.equal(res.body.length, 4, '4 results')
     t.equal(res.body[0]._digger.tag, 'area', 'area results')
-    
+
     t.end()
+  })
+})
+
+// load an item we know was added from cities.json
+tape('GET diggerid', t => {
+
+  const FIXEDID = '17dcd3b0ba3411e2b58d91a4d58f5088'
+
+  request({
+    url:'http://127.0.0.1:8080/item/' + FIXEDID,
+    method:'GET',
+    json:true
+  }, function(err, res){
+
+    if(err){
+      t.error(err)
+      t.end()
+    }
+
+    t.equal(res.statusCode, 200, '200 status')
+    t.ok(res.body instanceof Array, 'result is an array')
+    t.equal(res.body[0]._digger.diggerid, FIXEDID, 'diggerid')
+
+    t.end()
+  })
+})
+
+// append an item to the known cities folder and select it
+
+tape('POST diggerid', t => {
+
+  const addData = {
+    name:'Folder',
+    _digger:{
+      tag:'folder',
+      inode:'addedcities',
+      class:['addcity'],
+      id:'addcity'
+    }
+  }
+
+  request({
+    url:'http://127.0.0.1:8080/item/17dcd3b0ba3411e2b58d91a4d58f5088',
+    method:'POST',
+    json:true,
+    body:addData
+  }, function(err, res){
+
+    if(err){
+      t.error(err)
+      t.end()
+    }
+
+    t.equal(res.statusCode, 200, '200 status')
+    t.equal(res.body[0]._digger.inode, 'addedcities', 'added inode')
+
+    request({
+      url:'http://127.0.0.1:8080/select/cities',
+      method:'GET',
+      qs:{
+        selector:'folder.hello > folder.addcity'
+      },
+      json:true
+    }, function(err, res){
+
+      if(err){
+        t.error(err)
+        t.end()
+      }
+
+      t.equal(res.statusCode, 200, '200 status')
+      t.equal(res.body[0]._digger.inode, 'addedcities', 'added inode')
+      
+      t.end()
+    })
+    
   })
 })
 

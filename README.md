@@ -30,6 +30,10 @@ update an item
 
 delete an item
 
+#### `GET /path/:path`
+
+get an item at a path
+
 #### `POST /path/:path`
 
 add an item to a path
