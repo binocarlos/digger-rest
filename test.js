@@ -39,6 +39,44 @@ tape('read version', t => {
   
 })
 
+tape('append data to a path', t => {
+  const addData = {
+    name:'Red Apple',
+    _digger:{
+      id:'mything',
+      class:['apple'],
+      tag:'fruit'
+    },
+    color:'red',
+    _children:[{
+      name:'Apple Sticker',
+      _digger:{
+        tag:'sticker'
+      },
+      title:'Juicy'
+    }]
+  }
+
+  request({
+    url:'http://127.0.0.1:8080/path/shop/food',
+    method:'POST',
+    json:true,
+    body:addData
+  }, function(err, res){
+
+    if(err){
+      t.error(err)
+      t.end()
+    }
+
+    t.equal(res.statusCode, 200, '200 status')
+    t.equal(res.body[0].name, 'Red Apple', 'data is there')
+    t.equal(res.body[0]._digger.path, '/shop/food', 'the path is set')
+
+    t.end()
+  })
+})
+
 tape('close server', t => {
   server.close()
   t.end()

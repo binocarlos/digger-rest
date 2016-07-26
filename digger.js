@@ -11,7 +11,7 @@ module.exports = function(leveldb){
 
   var client = diggerclient();
   client.on('request', function(req, res){
-    digger.reception(res, res)
+    digger.reception(req, res)
   })
 
   return client

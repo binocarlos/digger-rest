@@ -30,6 +30,10 @@ update an item
 
 delete an item
 
+#### `POST /path/:path`
+
+add an item to a path
+
 #### `GET /select/:path?selector=`
 
 select items from a context

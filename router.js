@@ -1,5 +1,6 @@
 var path = require('path')
 var HttpHashRouter = require('http-hash-router')
+var concat = require('concat-stream')
 var digger = require('./digger')
 
 
@@ -13,6 +14,41 @@ module.exports = function(leveldb){
   router.set('/version', {
     GET:function(req, res){
       res.end(VERSION)
+    }
+  })
+
+  router.set('/path/*', {
+    POST:function(req, res, opts, onError){
+
+      // the warehouse path set from the url
+      // this is the container we are appending to
+      var path = opts.splat
+      path = path.indexOf('/') == 0 ? path : '/' + path
+      const warehouse = client.connect(path)
+
+      req.pipe(concat(function(body){
+        try {
+          body = JSON.parse(body.toString())
+        } catch (e) {
+          res.statusCode = 500
+          return res.end(e.toString())
+        }
+
+        const addContainer = client.create(body)
+
+        warehouse
+          .append(addContainer)
+          .ship(function(added){
+            res.setHeader('content-type', 'application/json')
+            res.end(JSON.stringify(added.toJSON()))
+          })
+          .on('error', function(err){
+            res.statusCode = 500
+            res.end(err.toString())
+          })
+
+      }))
+
     }
   })
 
