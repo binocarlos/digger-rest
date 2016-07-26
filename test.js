@@ -1,6 +1,7 @@
 var http = require('http')
 var tape = require('tape')
 var path = require('path')
+var async = require('async')
 var request = require('request')
 var Router = require('./router')
 
@@ -85,52 +86,96 @@ tape('append data to a path', t => {
 
     t.equal(res.statusCode, 200, '200 status')
     t.equal(res.body[0]._children[0].name, 'Red Apple', 'data is there')
-    t.equal(res.body[0]._children[0]._digger.path, '/shop/food/folder1', 'the path is set')
+    t.equal(res.body[0]._children[0]._digger.path, '/mydb/shop/food/folder1', 'the path is set')
     t.equal(res.body[0]._children[0]._digger.inode, 'item1', 'the inode is set')
 
     t.end()
   })
 })
 
-/*
-tape('get keys', t => {
 
+tape('list keys', t => {
+  
   db.createReadStream()
-  .on('data', function (data) {
-    console.log(data.key, '=', data.value)
-  })
-  .on('error', function (err) {
-    console.log('Oh my!', err)
-  })
-  .on('close', function () {
-    console.log('Stream closed')
-  })
-  .on('end', function () {
-    console.log('Stream closed')
-    t.end()
-  })
-
+    .on('data', function (data) {
+      console.log(data.key, '=', data.value)
+    })
+    .on('error', function (err) {
+      console.log('Oh my!', err)
+    })
+    .on('close', function () {
+      console.log('Stream closed')
+    })
+    .on('end', function () {
+      console.log('Stream closed')
+      t.end()
+    })
+  
+  
 })
 
 
-tape('get one item from the path', t => {
-  request({
-    url:'http://127.0.0.1:8080/path/shop/food/item1',
-    method:'GET',
-    json:true
-  }, function(err, res){
+// load a folder that does not exist in the data
+// digger should create folders for virtual entities
+tape('get a virtual folder', t => {
 
+  async.series([
+
+    // first the top level folder to ensure the path and inode are correct
+    next => {
+      request({
+        url:'http://127.0.0.1:8080/path/shop',
+        method:'GET',
+        json:true
+      }, function(err, res){
+
+        if(err){
+          t.error(err)
+          t.end()
+        }
+
+        t.equal(res.statusCode, 200, '200 status')
+        t.ok(res.body instanceof Array, 'result is an array')
+
+        t.equal(res.body[0]._digger.tag, 'folder')
+        t.equal(res.body[0]._digger.path, '/mydb')
+        t.equal(res.body[0]._digger.inode, 'shop')
+
+        next()
+      })
+    },
+
+    next => {
+      request({
+        url:'http://127.0.0.1:8080/path/shop/food',
+        method:'GET',
+        json:true
+      }, function(err, res){
+
+        if(err){
+          t.error(err)
+          t.end()
+        }
+
+        t.equal(res.statusCode, 200, '200 status')
+        t.ok(res.body instanceof Array, 'result is an array')
+
+        t.equal(res.body[0]._digger.tag, 'folder')
+        t.equal(res.body[0]._digger.path, '/mydb/shop')
+        t.equal(res.body[0]._digger.inode, 'food')
+
+        next()
+      })
+    }
+  ], err => {
     if(err){
       t.error(err)
-      t.end()
     }
 
-    console.log('-------------------------------------------');
-    console.dir(res.statusCode)
-    console.dir(res.body)
     t.end()
   })
-})*/
+  
+})
 
 
 tape('close server', t => {

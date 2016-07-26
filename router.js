@@ -1,12 +1,27 @@
-var path = require('path')
-var HttpHashRouter = require('http-hash-router')
-var concat = require('concat-stream')
-var digger = require('./digger')
+const path = require('path')
+const HttpHashRouter = require('http-hash-router')
+const concat = require('concat-stream')
+const digger = require('./digger')
 
+// if the basepath is not passed we do need one
+// to make the path based queries work
+const DEFAULT_BASE_PATH = '/mydb'
+const VERSION = require(path.join(__dirname, 'package.json')).version
 
-var VERSION = require(path.join(__dirname, 'package.json')).version
+// get warehousepath and itempath from opts.params.warehouse and opts.splat
+function getWarehousePaths(opts, basepath){
+  var itempath = opts.splat || ''
+  itempath = itempath.indexOf('/') == 0 ? itempath : '/' + itempath
 
-module.exports = function(leveldb){
+  return {
+    warehouse:basepath,
+    item:itempath
+  }
+}
+
+module.exports = function(leveldb, basepath){
+
+  basepath = basepath || DEFAULT_BASE_PATH
 
   var client = digger(leveldb)
   var router = HttpHashRouter()
@@ -17,58 +32,67 @@ module.exports = function(leveldb){
     }
   })
 
-  router.set('/path/*', {
-    GET:function(req, res, opts, onError){
-      var path = opts.splat
-      path = path.indexOf('/') == 0 ? path : '/' + path
-      var parts = path.split('/')
-      var inode = parts.pop()
-      path = parts.join('/')
+  // get a single item by it's path
+  function getItemByPath(req, res, opts, onError){
 
-      const warehouse = client.connect(path)
+    const paths = getWarehousePaths(opts, basepath)
+    const warehouse = client.connect(paths.warehouse)
 
-      warehouse('fruit > sticker')
-        .ship(function(results){
+    warehouse(paths.item)
+      .ship(function(results){
+        res.setHeader('content-type', 'application/json')
+
+        if(results.count()>0){
+          var parts = results.digger('path').split('/')
+          if(parts[parts.length-1]==results.digger('inode')){
+            parts.pop()
+            results.digger('path', parts.join('/'))
+          }
+        }
+        
+        res.end(JSON.stringify(results.toJSON()))
+      })
+      .on('error', function(err){
+        res.statusCode = 500
+        res.end(err.toString())
+      })
+  }
+
+  // append items to a path
+  function postItemByPath(req, res, opts, onError){
+
+    const paths = getWarehousePaths(opts, basepath)
+    const itempath = paths.warehouse + paths.item
+    const warehouse = client.connect(itempath)
+
+    req.pipe(concat(function(body){
+      try {
+        body = JSON.parse(body.toString())
+      } catch (e) {
+        res.statusCode = 500
+        return res.end(e.toString())
+      }
+
+      const addContainer = client.create(body)
+
+      warehouse
+        .append(addContainer)
+        .ship(function(added){
           res.setHeader('content-type', 'application/json')
-          res.end(JSON.stringify(results.toJSON()))
+          res.end(JSON.stringify(added.toJSON()))
         })
         .on('error', function(err){
           res.statusCode = 500
           res.end(err.toString())
         })
-    },
-    POST:function(req, res, opts, onError){
 
-      // the warehouse path set from the url
-      // this is the container we are appending to
-      var path = opts.splat
-      path = path.indexOf('/') == 0 ? path : '/' + path
-      const warehouse = client.connect(path)
+    }))
 
-      req.pipe(concat(function(body){
-        try {
-          body = JSON.parse(body.toString())
-        } catch (e) {
-          res.statusCode = 500
-          return res.end(e.toString())
-        }
+  }
 
-        const addContainer = client.create(body)
-
-        warehouse
-          .append(addContainer)
-          .ship(function(added){
-            res.setHeader('content-type', 'application/json')
-            res.end(JSON.stringify(added.toJSON()))
-          })
-          .on('error', function(err){
-            res.statusCode = 500
-            res.end(err.toString())
-          })
-
-      }))
-
-    }
+  router.set('/path/*', {
+    GET:getItemByPath,
+    POST:postItemByPath
   })
 
   function handler(req, res) {
