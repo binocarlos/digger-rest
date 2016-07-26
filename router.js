@@ -4,14 +4,12 @@ const HttpHashRouter = require('http-hash-router')
 const concat = require('concat-stream')
 const digger = require('./digger')
 
-// if the basepath is not passed we do need one
-// to make the path based queries work
-const DEFAULT_BASE_PATH = '/mydb'
 const VERSION = require(path.join(__dirname, 'package.json')).version
 
 // get warehousepath and itempath from opts.params.warehouse and opts.splat
 function getWarehousePaths(opts, basepath){
   var itempath = opts.splat || ''
+
   itempath = itempath.indexOf('/') == 0 ? itempath : '/' + itempath
 
   return {
@@ -22,7 +20,13 @@ function getWarehousePaths(opts, basepath){
 
 module.exports = function(leveldb, basepath){
 
-  basepath = basepath || DEFAULT_BASE_PATH
+  if(!basepath){
+    throw new Error('basepath required')
+  }
+
+  if(basepath.indexOf('/')!=0){
+    throw new Error('basepath must start with /')
+  }
 
   var client = digger(leveldb)
   var router = HttpHashRouter()

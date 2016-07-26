@@ -6,6 +6,9 @@
   "scripts": {
     "test": "node test.js"
   },
+  "bin": {
+    "digger-rest":"./index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/binocarlos/digger-rest.git"
