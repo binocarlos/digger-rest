@@ -18,6 +18,25 @@ module.exports = function(leveldb){
   })
 
   router.set('/path/*', {
+    GET:function(req, res, opts, onError){
+      var path = opts.splat
+      path = path.indexOf('/') == 0 ? path : '/' + path
+      var parts = path.split('/')
+      var inode = parts.pop()
+      path = parts.join('/')
+
+      const warehouse = client.connect(path)
+
+      warehouse('fruit > sticker')
+        .ship(function(results){
+          res.setHeader('content-type', 'application/json')
+          res.end(JSON.stringify(results.toJSON()))
+        })
+        .on('error', function(err){
+          res.statusCode = 500
+          res.end(err.toString())
+        })
+    },
     POST:function(req, res, opts, onError){
 
       // the warehouse path set from the url

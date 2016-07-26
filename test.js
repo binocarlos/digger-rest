@@ -4,7 +4,7 @@ var path = require('path')
 var request = require('request')
 var Router = require('./router')
 
-var level    = require('level-test')()
+var level    = require('level-test')({mem:true})
 var sub = require('level-sublevel')
 
 var db = sub(level('level-digger--append', {encoding: 'json'}))
@@ -41,19 +41,33 @@ tape('read version', t => {
 
 tape('append data to a path', t => {
   const addData = {
-    name:'Red Apple',
+    name:'Folder',
     _digger:{
-      id:'mything',
-      class:['apple'],
-      tag:'fruit'
+      tag:'folder',
+      inode:'folder1',
     },
-    color:'red',
     _children:[{
-      name:'Apple Sticker',
+      name:'Red Apple',
+      _digger:{
+        id:'mything',
+        inode:'item1',
+        class:['apple'],
+        tag:'fruit'
+      },
+      color:'red',
+      _children:[{
+        name:'Apple Sticker',
+        _digger:{
+          tag:'sticker'
+        },
+        title:'Juicy'
+      }]
+    },{
+      name:'Apple Sticker2',
       _digger:{
         tag:'sticker'
       },
-      title:'Juicy'
+      title:'Juicy2'
     }]
   }
 
@@ -70,12 +84,54 @@ tape('append data to a path', t => {
     }
 
     t.equal(res.statusCode, 200, '200 status')
-    t.equal(res.body[0].name, 'Red Apple', 'data is there')
-    t.equal(res.body[0]._digger.path, '/shop/food', 'the path is set')
+    t.equal(res.body[0]._children[0].name, 'Red Apple', 'data is there')
+    t.equal(res.body[0]._children[0]._digger.path, '/shop/food/folder1', 'the path is set')
+    t.equal(res.body[0]._children[0]._digger.inode, 'item1', 'the inode is set')
 
     t.end()
   })
 })
+
+/*
+tape('get keys', t => {
+
+  db.createReadStream()
+  .on('data', function (data) {
+    console.log(data.key, '=', data.value)
+  })
+  .on('error', function (err) {
+    console.log('Oh my!', err)
+  })
+  .on('close', function () {
+    console.log('Stream closed')
+  })
+  .on('end', function () {
+    console.log('Stream closed')
+    t.end()
+  })
+
+})
+
+
+tape('get one item from the path', t => {
+  request({
+    url:'http://127.0.0.1:8080/path/shop/food/item1',
+    method:'GET',
+    json:true
+  }, function(err, res){
+
+    if(err){
+      t.error(err)
+      t.end()
+    }
+
+    console.log('-------------------------------------------');
+    console.dir(res.statusCode)
+    console.dir(res.body)
+    t.end()
+  })
+})*/
+
 
 tape('close server', t => {
   server.close()
