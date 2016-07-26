@@ -1,4 +1,5 @@
 const path = require('path')
+const url = require('url')
 const HttpHashRouter = require('http-hash-router')
 const concat = require('concat-stream')
 const digger = require('./digger')
@@ -90,9 +91,32 @@ module.exports = function(leveldb, basepath){
 
   }
 
+  // run a selector on a context
+  function selectItemsByPath(req, res, opts, onError){
+    const paths = getWarehousePaths(opts, basepath)
+    const itempath = paths.warehouse + paths.item
+    const warehouse = client.connect(itempath)
+
+    const selector = url.parse(req.url, true).query.selector
+    res.setHeader('content-type', 'application/json')
+
+    warehouse(selector)
+      .ship(function(results){
+        res.end(JSON.stringify(results.toJSON()))
+      })
+      .on('error', function(err){
+        res.statusCode = 500
+        res.end(err.toString())
+      })
+  }
+
   router.set('/path/*', {
     GET:getItemByPath,
     POST:postItemByPath
+  })
+
+  router.set('/select/*', {
+    GET:selectItemsByPath
   })
 
   function handler(req, res) {

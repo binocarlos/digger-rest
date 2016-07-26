@@ -94,6 +94,28 @@ tape('append data to a path', t => {
 })
 
 
+tape('append city data to a path', t => {
+
+  const citydata = require('./cities.json')
+
+  request({
+    url:'http://127.0.0.1:8080/path/cities',
+    method:'POST',
+    json:true,
+    body:citydata
+  }, function(err, res){
+
+    if(err){
+      t.error(err)
+      t.end()
+    }
+
+    t.equal(res.statusCode, 200, '200 status')
+
+    t.end()
+  })
+})
+
 tape('list keys', t => {
   
   db.createReadStream()
@@ -117,7 +139,7 @@ tape('list keys', t => {
 
 // load a folder that does not exist in the data
 // digger should create folders for virtual entities
-tape('get a virtual folder', t => {
+tape('get items from paths', t => {
 
   async.series([
 
@@ -200,6 +222,31 @@ tape('get a virtual folder', t => {
   
 })
 
+
+tape('run a city selector', t => {
+
+  request({
+    url:'http://127.0.0.1:8080/select/cities',
+    method:'GET',
+    qs:{
+      selector:'country.big city.north > area'
+    },
+    json:true
+  }, function(err, res){
+
+    if(err){
+      t.error(err)
+      t.end()
+    }
+
+    t.equal(res.statusCode, 200, '200 status')
+    t.ok(res.body instanceof Array, 'result is an array')
+    t.equal(res.body.length, 4, '4 results')
+    t.equal(res.body[0]._digger.tag, 'area', 'area results')
+    
+    t.end()
+  })
+})
 
 tape('close server', t => {
   server.close()
