@@ -30,5 +30,5 @@ var router = Router(leveldb, args.basepath)
 
 var httpserver = http.createServer(router)
 httpserver.listen(args.port, function(){
-  console.log('digger-reset server listening on port ' + args.port)
+  console.log('digger-rest server listening on port ' + args.port)
 })
