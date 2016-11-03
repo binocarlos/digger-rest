@@ -21,7 +21,7 @@ var args = require('minimist')(process.argv, {
   default:{
     port:process.env.PORT || 80,
     file:process.env.FILE || defaultDataPath,
-    basepath:process.env.BASEPATH || '/mydb'
+    basepath:process.env.BASEPATH || '/data'
   }
 })
 

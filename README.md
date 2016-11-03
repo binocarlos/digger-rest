@@ -154,7 +154,10 @@ update an item
 const FIXEDID = '17dcd3b0ba3411e2b58d91a4d58f5088'
 var updatedata = {
   size:120,
-  color:'blue'
+  color:'blue',
+  _digger:{
+    id:"places2"
+  }
 }
 
 request({
@@ -167,6 +170,8 @@ request({
 })
 ```
 
+this does a deep merge of the data you send
+
 results:
 
 ```javascript
@@ -177,7 +182,7 @@ results:
             "class": [
                 "hello"
             ],
-            "id": "places",
+            "id": "places2",
             "diggerid": "17dcd3b0ba3411e2b58d91a4d58f5088",
             "inode": "77e8b5",
             "path": "/mydb/cities",

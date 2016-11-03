@@ -3,11 +3,15 @@ const url = require('url')
 const morgan = require('morgan')
 const HttpHashRouter = require('http-hash-router')
 const concat = require('concat-stream')
+const DeepMerge = require("deep-merge/multiple")
 const digger = require('./digger')
 
 const logger = morgan('combined')
 const VERSION = require(path.join(__dirname, 'package.json')).version
 
+const merge = DeepMerge(function(a, b){
+  return b
+})
 // get warehousepath and itempath from opts.params.warehouse and opts.splat
 function getWarehousePaths(opts, basepath){
   var itempath = opts.splat || ''
@@ -121,9 +125,15 @@ module.exports = function(leveldb, basepath){
             return
           }
 
-          Object.keys(body || {}).forEach(function(key){
-            results.attr(key, body[key])
-          })
+          var diggerData = body._digger || {}
+
+          // remove path based digger fields
+          delete(diggerData.inode)
+          delete(diggerData.diggerid)
+          delete(diggerData.path)
+          delete(diggerData.created)
+      
+          results.models[0] = merge([results.models[0], body])
 
           results
             .save()

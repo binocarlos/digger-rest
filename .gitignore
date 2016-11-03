@@ -59,10 +59,5 @@ results
 
 npm-debug.log
 node_modules
-components
-build
-src/www/js/build
-
 private
-.quarry
-videos
+yarn.lock
