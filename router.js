@@ -258,7 +258,12 @@ module.exports = function(leveldb, basepath){
 
     warehouse(selector)
       .ship(function(results){
-        res.end(JSON.stringify(results.toJSON()))
+        // filter out the node with the path because we are doing
+        // a selector 'inside' it
+        results = results.toJSON().filter(function(result){
+          return [result._digger.path, result._digger.inode].join('/') != itempath
+        })
+        res.end(JSON.stringify(results))
       })
       .on('error', function(err){
         res.statusCode = 500

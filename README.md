@@ -238,3 +238,7 @@ request({
   // ...
 })
 ```
+
+#### `GET /keys`
+
+get all the keys in the database
