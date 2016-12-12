@@ -1,6 +1,6 @@
 {
   "name": "digger-rest",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "REST api server for digger queries",
   "main": "index.js",
   "scripts": {
