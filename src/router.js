@@ -1,13 +1,11 @@
 const path = require('path')
 const url = require('url')
-const morgan = require('morgan')
 const HttpHashRouter = require('http-hash-router')
 const concat = require('concat-stream')
 const DeepMerge = require("deep-merge/multiple")
 const digger = require('./digger')
-
-const logger = morgan('combined')
-const VERSION = require(path.join(__dirname, 'package.json')).version
+const Logger = require('./logger')
+const VERSION = require(path.join(__dirname, '..', 'package.json')).version
 
 const merge = DeepMerge(function(a, b){
   return b
@@ -306,19 +304,23 @@ module.exports = function(leveldb, basepath){
     }
   })
 
+  var logger = Logger({
+    name:'digger-rest'
+  })
+
   function handler(req, res) {
+
+    logger(req, res)
 
     function onError(err) {
       if (err) {
+        req.log.error(err)
         res.statusCode = err.statusCode || 500;
         res.end(err.message);
       }
     }
 
-    logger(req, res, function (err) {
-      if(err) return onError(err)
-      router(req, res, {}, onError)
-    })
+    router(req, res, {}, onError)
   }
 
   return handler

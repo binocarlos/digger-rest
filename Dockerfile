@@ -5,5 +5,5 @@ RUN mkdir -p /data/db
 COPY ./package.json /app/package.json
 WORKDIR /app
 RUN npm install --production
-ADD ./ /app
-ENTRYPOINT ["node", "index.js"]
+COPY ./src /app/src
+ENTRYPOINT ["node", "src/index.js"]

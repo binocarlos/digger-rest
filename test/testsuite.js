@@ -3,7 +3,7 @@ var path = require('path')
 var async = require('async')
 var request = require('request')
 
-var VERSION = require(path.join(__dirname, 'package.json')).version
+var VERSION = require(path.join(__dirname, '..', 'package.json')).version
 
 module.exports = function(tape, url){
   tape('read version', t => {
@@ -208,13 +208,13 @@ module.exports = function(tape, url){
   })
 
 
-  tape('run a city selector', t => {
+  tape('run a classname selector', t => {
 
     request({
       url: url + '/select/cities',
       method:'GET',
       qs:{
-        selector:'country.big city.north > area'
+        selector:'.south'
       },
       json:true
     }, function(err, res){
@@ -224,11 +224,10 @@ module.exports = function(tape, url){
         t.end()
       }
 
-      console.log(JSON.stringify(res.body, null, 4))
       t.equal(res.statusCode, 200, '200 status')
       t.ok(res.body instanceof Array, 'result is an array')
-      t.equal(res.body.length, 4, '4 results')
-      t.equal(res.body[0]._digger.tag, 'area', 'area results')
+      t.equal(res.body.length, 3, '3 results')
+      t.equal(res.body[0]._digger.tag, 'city', 'city results')
 
       t.end()
     })

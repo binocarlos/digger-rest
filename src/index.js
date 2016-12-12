@@ -29,6 +29,4 @@ var leveldb = sub(level(args.file, {encoding: 'json'}))
 var router = Router(leveldb, args.basepath)
 
 var httpserver = http.createServer(router)
-httpserver.listen(args.port, function(){
-  console.log('digger-rest server listening on port ' + args.port)
-})
+httpserver.listen(args.port)

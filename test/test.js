@@ -3,7 +3,7 @@ var tape = require('tape')
 var path = require('path')
 var async = require('async')
 var request = require('request')
-var Router = require('./router')
+var Router = require('../src/router')
 
 var level    = require('level-test')({mem:true})
 var sub = require('level-sublevel')
@@ -13,7 +13,7 @@ var server
 
 var testsuite = require('./testsuite')
 
-var VERSION = require(path.join(__dirname, 'package.json')).version
+var VERSION = require(path.join(__dirname, '..', 'package.json')).version
 
 var args = require('minimist')(process.argv, {
   alias:{
